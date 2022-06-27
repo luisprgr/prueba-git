@@ -23,9 +23,9 @@ jobs:
       - run: echo ${{github.event.push.ref}}
       - run: echo ${{github.event.push.pusher}}
       - run: echo nuevas pruebas ------------------
-      - run: echo ${{github.event.commits[][author][name]}}
-      - run: echo ${{github.event.commits[]}}
-      - run: echo ${{github.event.commits[][message]}}
+      - run: echo ${{github.event.commits[0][author][name]}}
+      - run: echo ${{github.event.commits[0]}}
+      - run: echo ${{github.event.commits[0][message]}}
       - run: echo ${{toJSON(github.event.commits[][message])}}
       - run: echo $GITHUB_CONTEXT
       - run: echo $github_context
