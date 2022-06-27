@@ -22,10 +22,9 @@ jobs:
           echo ${GITHUB_REF_NAME}
           echo ${GITHUB_ACTOR}
           echo ${GITHUB_EVENT_NAME}
-          echo ${GITHUB_HEAD_REF}
           echo ${GITHUB_JOB}
           echo ${GITHUB_REF}
-          
+
 
 
       - name: Run a multi-line script
