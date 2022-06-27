@@ -26,7 +26,7 @@ jobs:
           echo github.event.push.pusher: ${{github.event.push.pusher}}
           echo github.event.push.commits: ${{github.event.push.commits}}
           echo $GITHUB_CONTEXT
-          echo ${{github_context}}
+          echo $github_context
          
       - name: Run a multi-line script
         run: |
