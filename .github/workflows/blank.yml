@@ -27,6 +27,8 @@ jobs:
           echo github.event.push.commits: ${{github.event.push.commits}}
           echo $GITHUB_CONTEXT
           echo $github_context
+        
+      - run: echo '${{ toJSON(github) }}'
          
       - name: Run a multi-line script
         run: |
