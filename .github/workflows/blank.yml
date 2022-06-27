@@ -26,8 +26,8 @@ jobs:
       - run: echo ${{github.event.commits[0]['author']['name']}}
       - run: echo ${{github.event.commits[0]}}
       # - run: echo ${{github.event.commits[0]['message']}}
-      - run: echo ${{toJSON(github.event.commits[0]['message'])}}
-      - run: echo ${{toJSON(github.event.commits[0])}}
+      - run: echo '${{toJSON(github.event.commits[0]['message'])}}
+      - run: echo '${{toJSON(github.event.commits[0])}}'
       - run: echo $GITHUB_CONTEXT
       - run: echo $github_context
       - run: echo '${{ toJSON(github) }}'
