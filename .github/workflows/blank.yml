@@ -24,7 +24,13 @@ jobs:
           echo github.ref_name: ${{ github.ref_name }}
           echo github.event.push.ref: ${{github.event.push.ref}}
           echo github.event.push.pusher: ${{github.event.push.pusher}}
-          echo github.event.push.commits: ${{github.event.push.commits}}
+          echo github.event.push.commits: $github.event.push.commits
+          echo github.event.commits: $github.event.commits
+          echo github.event.commits.message: $github.event.commits.message
+          echo $GITHUB_CONTEXT
+          echo $github_context
+        
+      - run: echo '${{ toJSON(github) }}'
          
       - name: Run a multi-line script
         run: |
