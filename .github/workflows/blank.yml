@@ -13,7 +13,7 @@ jobs:
 
       - name: Run echos
         run: |
-          echo "{{github.event.pull_request.title}}"
+          echo {{github.event.pull_request.title}}
           echo ${GITHUB_REF_NAME}
           echo ${github.base_ref}
           echo {{github.event.push}}
