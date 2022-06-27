@@ -1,0 +1,22 @@
+name: prueba
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches: [main]
+
+concurrency: 
+  group: Test-${{github.ref}}
+  cancel-in-progress: true
+
+jobs:
+  build: 
+    runs-on: ubuntu-latest
+    
+    steps:
+      - run: echo ${{ github.ref }}
+      - name: sleep
+        run: sleep 10s
+        shell: bash
+        

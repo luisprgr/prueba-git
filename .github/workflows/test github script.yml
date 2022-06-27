@@ -1,0 +1,30 @@
+name: Draft Release
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  Create_Release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Create release message based on latest commits
+        uses: actions/github-script@v5
+        id: message
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const commits = await github.rest.repos.listCommits({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              since: null != null ? '' : '2021-01-01T00:00:00Z'
+            })
+            const message = commits.data.map(commit => {return commit.commit.message}).join('\n')
+            return message
+
+      - name: Print message
+        run: echo ${{ steps.message.outputs.result }}
