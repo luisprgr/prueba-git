@@ -14,12 +14,18 @@ jobs:
       - name: Run echos
         run: |
           echo ${{github.event.pull_request.title}}
-          echo ${GITHUB_REF_NAME}
           echo ${{github.base_ref}}
           echo ${{github.event.push}}
           echo ${{github.event.push.title}}
           echo ${{github.event.pull_request}}
           echo ${{github.event.pull_request_review}}
+          echo ${GITHUB_REF_NAME}
+          echo ${GITHUB_ACTOR}
+          echo ${GITHUB_EVENT_NAME}
+          echo ${GITHUB_HEAD_REF}
+          echo ${GITHUB_JOB}
+          echo ${GITHUB_REF}
+          
 
 
       - name: Run a multi-line script
