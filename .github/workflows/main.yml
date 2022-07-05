@@ -13,8 +13,9 @@ concurrency:
 jobs:
   build: 
     runs-on: ubuntu-latest
-
+    
     steps:
+      - run: echo ${{ github.ref }}
       - name: sleep
         run: sleep 120s
         shell: bash
