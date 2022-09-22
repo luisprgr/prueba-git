@@ -79,3 +79,4 @@ if __name__ == "__main__":
         delete_paths_from_vscode()
     else:
         inject_paths_for_vscode()
+
