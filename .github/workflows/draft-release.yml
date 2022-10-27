@@ -15,15 +15,29 @@ jobs:
       - name: Get latest tag
         id: get_latest_tag
         run: |
+          git tag --sort=committerdate | tail -1
           echo ::set-output name=tag::$(git tag --sort=committerdate | tail -1)
       
       - name: Create first tag if none exists
         id: create_tag
         if: steps.get_latest_tag.outputs.tag == ''
-        run: |
-          git tag -a v0.0.1 -m "First version"
-          git push origin v0.0.1
-          echo ::set-output name=tag::v0.0.1
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const tag = 'v0.0.1'
+            await github.git.createTag({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag: tag,
+              message: 'First version',
+              object: context.sha,
+              type: 'commit',
+              tagger: {
+                name: 'GitHub Actions',
+                email: '41898282+github-actions[bot]@users.noreply.github.com'
+              }
+            })
 
       - name: See if release exists
         uses: actions/github-script@v6
