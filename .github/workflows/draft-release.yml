@@ -34,7 +34,7 @@ jobs:
             const release = await github.repos.getReleaseByTag({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              tag: ${{ steps.get_latest_tag.outputs.tag if steps.get_latest_tag.outputs.tag != '' else steps.create_tag.outputs.tag }}}} 
+              tag: ${{steps.get_latest_tag.outputs.tag}} != '' ? ${{ steps.get_latest_tag.outputs.tag }} : ${{steps.create_tag.outputs.tag}} 
             })
             return release.data
       
@@ -44,7 +44,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const actual_tag = ${{ steps.get_latest_tag.outputs.tag if steps.get_latest_tag.outputs.tag != '' else steps.create_tag.outputs.tag }}}}
+            const actual_tag = ${{ steps.get_latest_tag.outputs.tag }} != '' ? ${{ steps.get_latest_tag.outputs.tag }} : ${{ steps.create_tag.outputs.tag }}
             if ${{ steps.release.outputs.result.draft }} {
               return actual_tag
             } else {
@@ -75,7 +75,7 @@ jobs:
             const commits = await github.repos.listCommits({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              since: ${{ steps.latest_release.outputs.result.published_at if steps.latest_release.outputs.result != null else '2021-01-01T00:00:00Z' }}
+              since: ${{ steps.latest_release.outputs.result }} != null ? ${{ steps.latest_release.outputs.result.published_at }} : '2021-01-01T00:00:00Z' }}
             })
             const message = commits.data.map(commit => {return commit.commit.message}).join('\n')
             return message
