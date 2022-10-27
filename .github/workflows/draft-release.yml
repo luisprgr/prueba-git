@@ -1,10 +1,10 @@
 name: Draft Release
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
-  workflow_dispatch:
-
+  
 jobs:
   Create_Release:
     runs-on: ubuntu-latest
@@ -26,17 +26,11 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const tag = 'v0.0.1'
-            await github.git.createTag({
+            await github.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              tag: tag,
-              message: 'First version',
-              object: context.sha,
-              type: 'commit',
-              tagger: {
-                name: 'GitHub Actions',
-                email: '41898282+github-actions[bot]@users.noreply.github.com'
-              }
+              ref: `refs/tags/${tag}`,
+              sha: context.sha
             })
 
       - name: See if release exists
@@ -105,3 +99,7 @@ jobs:
           draft: true
           message: ${{ steps.message.outputs.result }}
  
+
+
+# name: 'GitHub Actions',
+# email: '41898282+github-actions[bot]@users.noreply.github.com'
