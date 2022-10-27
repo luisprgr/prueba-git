@@ -19,9 +19,9 @@ jobs:
           echo ::set-output name=tag::$(git tag --sort=committerdate | tail -1)
       
       - name: Create first tag if none exists
+        uses: actions/github-script@v6
         id: create_tag
         if: steps.get_latest_tag.outputs.tag == ''
-        uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -47,8 +47,8 @@ jobs:
             return release.data
       
       - name: Stablish new release tag
-        id: tag
         uses: actions/github-script@v6
+        id: tag
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -75,8 +75,8 @@ jobs:
       
       
       - name: Create release message based on latest commits
-        id: message
         uses: actions/github-script@v6
+        id: message
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -89,8 +89,8 @@ jobs:
             return message
 
       - name: Create Release
-        id: create_release
         uses: actions/create-release@v1
+        id: create_release
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
