@@ -1,0 +1,93 @@
+name: Draft Release
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  Create_Release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Get latest tag
+        id: get_latest_tag
+        run: |
+          echo ::set-output name=tag::$(git tag --sort=committerdate | tail -1)
+      
+      - name: Create first tag if none exists
+        if: steps.get_latest_tag.outputs.tag == ''
+        id: create_tag
+        run: |
+          git tag -a v0.0.1 -m "First version"
+          git push origin v0.0.1
+          echo ::set-output name=tag::v0.0.1
+
+      - name: See if release exists
+        uses: actions/github-script@v6
+        id: release
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const release = await github.repos.getReleaseByTag({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag: ${{ steps.get_latest_tag.outputs.tag if steps.get_latest_tag.outputs.tag != '' else steps.create_tag.outputs.tag }}}} 
+            })
+            return release.data
+      
+      - name: Stablish new release tag
+        id: tag
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const actual_tag = ${{ steps.get_latest_tag.outputs.tag if steps.get_latest_tag.outputs.tag != '' else steps.create_tag.outputs.tag }}}}
+            if ${{ steps.release.outputs.result.draft }} {
+              return actual_tag
+            } else {
+              const new_tag = actual_tag.split('.')
+              new_tag[2] = (parseInt(new_tag[2]) + 1).toString()
+              return new_tag.join('.')
+            }
+      
+      - name: Get latest release not draft
+        uses: actions/github-script@v6
+        id: latest_release
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const releases = await github.repos.listReleases({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            })
+            return releases.data.filter(release => !release.draft)[0]
+      
+      
+      - name: Create release message based on latest commits
+        id: message
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const commits = await github.repos.listCommits({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              since: ${{ steps.latest_release.outputs.result.published_at if steps.latest_release.outputs.result != null else '2021-01-01T00:00:00Z' }}
+            })
+            const message = commits.data.map(commit => {return commit.commit.message}).join('\n')
+            return message
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ githud.token }}
+        with:
+          tag_name: ${{ steps.tag.outputs.result }}
+          release_name: Release ${{ steps.tag.outputs.result }}
+          draft: true
+          message: ${{ steps.message.outputs.result }}
+ 
