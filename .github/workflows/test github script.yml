@@ -18,7 +18,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const commits = await github.repos.listCommits({
+            const commits = await github.rest.repos.listCommits({
               owner: context.repo.owner,
               repo: context.repo.repo,
               since: null != null ? '' : '2021-01-01T00:00:00Z'
