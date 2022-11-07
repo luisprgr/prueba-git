@@ -21,7 +21,7 @@ jobs:
             const commits = await github.repos.listCommits({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              since: ${{ steps.latest_release.outputs.result }} != null ? ${{ steps.latest_release.outputs.result.published_at }} : '2021-01-01T00:00:00Z' }}
+              since: null != null ? '' : '2021-01-01T00:00:00Z'
             })
             const message = commits.data.map(commit => {return commit.commit.message}).join('\n')
             return message
