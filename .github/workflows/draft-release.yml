@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - master
+      - main
   
 jobs:
   Create_Release:
@@ -42,7 +42,7 @@ jobs:
             const release = await github.repos.getReleaseByTag({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              tag: ${{steps.get_latest_tag.outputs.tag}} != '' ? ${{ steps.get_latest_tag.outputs.tag }} : ${{steps.create_tag.outputs.tag}} 
+              tag: ${{ steps.get_latest_tag.outputs.tag }} != '' ? ${{ steps.get_latest_tag.outputs.tag }} : ${{ steps.create_tag.outputs.tag }} 
             })
             return release.data
       
