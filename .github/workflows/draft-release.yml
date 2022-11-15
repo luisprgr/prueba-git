@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-  
+
 jobs:
   Create_Release:
     runs-on: ubuntu-latest
@@ -27,10 +27,10 @@ jobs:
             const latest_draft_release = draft_releases.length > 0 ? draft_releases[0] : null
             const latest_published_release = published_releases.length > 0 ? published_releases[0] : null
             return { latest_draft_release, latest_published_release }
-      
+
       - name: print last job output
         run: echo '${{steps.latest_releases.outputs.result}}' | python3 -m json.tool
-      
+
       # works and was tested
       - name: Get tag name to use if none exists creates first tag
         uses: actions/github-script@v6
@@ -73,22 +73,24 @@ jobs:
             }
 
             return tag
-            
+
       - name: print latest job result
         run: echo ${{ steps.tag.outputs.result }}
-      
+
       - name: deletes latest draft release if exists
         uses: actions/github-script@v6
-        if: ${{ steps.latest_releases.outputs.result.latest_draft_release }} != null
         with:
           script: |
-            const release_id = JSON.parse('${{steps.latest_releases.outputs.result}}').latest_draft_release.id
-            await github.rest.repos.deleteRelease({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              release_id: release_id
-            })
- 
+            const latest_releases = JSON.parse('${{steps.latest_releases.outputs.result}}')
+            if (latest_releases.latest_draft_release !== null) {
+              const release_id = JSON.parse('${{steps.latest_releases.outputs.result}}').latest_draft_release.id
+              await github.rest.repos.deleteRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                release_id: release_id
+              })
+            }
+
       - name: Create release message based on latest commits
         uses: actions/github-script@v6
         id: message
@@ -107,7 +109,7 @@ jobs:
               message = ''
             }
             return message
-      
+
       - name: print last job output
         run: echo ${{steps.message.outputs.result}}
 
@@ -121,8 +123,5 @@ jobs:
           release_name: Release ${{ steps.tag.outputs.result }}
           draft: true
           message: ${{ steps.message.outputs.result }}
- 
-
-
 # name: 'GitHub Actions',
 # email: '41898282+github-actions[bot]@users.noreply.github.com'
