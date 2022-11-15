@@ -53,7 +53,6 @@ jobs:
         with:
           script: |
             const tag = ${{steps.get_latest_tag_name.outputs.result}};
-            console.log(tag);
             return tag != '' ? tag : 'v0.0.1';
         
       - name: print last job output
@@ -112,7 +111,7 @@ jobs:
             return releases.data.filter(release => !release.draft)[0]
       
       - name: print last job output
-        run: echo ${{steps.latest_release.outputs.result}}
+        run: echo ${{steps.latest_release.outputs.result}} | python3 -m json.tool
       
       - name: Create release message based on latest commits
         uses: actions/github-script@v6
