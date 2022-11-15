@@ -48,7 +48,7 @@ jobs:
         id: latest_tag
         with:
           script: |
-            const tag = steps.get_latest_tag_name.outputs.result
+            const tag = ${{steps.get_latest_tag_name.outputs.result}}
             console.log(tag)
             return tag
         
