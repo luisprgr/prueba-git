@@ -71,6 +71,9 @@ jobs:
             })
             return release.data
       
+      - name: print last job output
+        run: echo ${{steps.release.outputs.result}}
+      
       - name: Stablish new release tag
         uses: actions/github-script@v6
         id: tag
@@ -84,6 +87,9 @@ jobs:
               new_tag[2] = (parseInt(new_tag[2]) + 1).toString()
               return new_tag.join('.')
             }
+
+      - name: print last job output
+        run: echo ${{steps.tag.outputs.result}}
       
       - name: Get latest release not draft
         uses: actions/github-script@v6
@@ -96,9 +102,11 @@ jobs:
             })
             return releases.data.filter(release => !release.draft)[0]
       
+      - name: print last job output
+        run: echo ${{steps.latest_release.outputs.result}}
       
       - name: Create release message based on latest commits
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         id: message
         with:
           script: |
@@ -109,6 +117,9 @@ jobs:
             })
             const message = commits.data.map(commit => {return commit.commit.message}).join('\n')
             return message
+      
+      - name: print last job output
+        run: echo ${{steps.message.outputs.result}}
 
       - name: Create Release
         uses: actions/create-release@v1
