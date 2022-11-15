@@ -64,14 +64,14 @@ jobs:
         id: release
         with:
           script: |
-            try:
+            try {
               const release = await github.rest.repos.getReleaseByTag({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 tag: ${{ steps.latest_tag.outputs.result }} 
               })
-            return release.data
-            catch (error) {
+              return release.data
+            } catch (error) {
               return null
             }
       
