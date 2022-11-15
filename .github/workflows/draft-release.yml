@@ -57,9 +57,10 @@ jobs:
             }
 
             const latest_releases = ${{steps.latest_releases.outputs.result}}
-
+            console.log(latest_releases.latest_published_release)
             if (latest_releases.latest_published_release !== null) {
               if (latest_releases.latest_published_release.tag_name == tag) {
+                console.log(latest_releases.latest_published_release.tag_name)
                 const new_tag = tag.split('.');
                 new_tag[2] = (parseInt(new_tag[2]) + 1).toString();
                 tag = new_tag.join('.');
