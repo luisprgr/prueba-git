@@ -12,7 +12,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Get tags
+      - name: Get Latest Tag
         uses: actions/github-script@v6
         id: get_latest_tag
         with:
@@ -21,6 +21,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               })
+            console.log(tags.data)
             return tags.data[0].name
 
       - name: print last workflow
