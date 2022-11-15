@@ -76,7 +76,7 @@ jobs:
             }
       
       - name: print last job output
-        run: echo ${{steps.release.outputs.result}} | python3 -m json.tool
+        run: echo '${{steps.release.outputs.result}}' | python3 -m json.tool
       
       - name: Stablish new release tag if last release is not draft
         uses: actions/github-script@v6
