@@ -21,7 +21,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               })
-            return tags
+            return tags.data[0].name
 
       - name: print last workflow
         run: echo ${{ steps.get_latest_tag.outputs.result }}
