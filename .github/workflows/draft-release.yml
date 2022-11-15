@@ -106,11 +106,15 @@ jobs:
                 repo: context.repo.repo,
                 since: JSON.parse('${{steps.latest_releases.outputs.result}}').latest_published_release.published_at
               })
-              console.log(commits)
+              commits.data.forEach(commit => {
+                console.log(commit)
+                console.log(commit.commit)
+              })
               message = commits.data.map(commit => commit.commit.message).join('\n')
               console.log(message)
             }
             return message
+          result-encoding: string
 
       - name: print last job output
         run: echo ${{steps.message.outputs.result}}
