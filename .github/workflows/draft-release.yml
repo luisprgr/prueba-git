@@ -106,7 +106,8 @@ jobs:
                 since: JSON.parse('${{steps.latest_releases.outputs.result}}').latest_published_release.published_at
               })
               console.log(commits)
-              message = ''
+              message = commits.data.map(commit => commit.commit.message).join('\n')
+              console.log(message)
             }
             return message
 
