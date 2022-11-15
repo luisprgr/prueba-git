@@ -12,6 +12,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      # works and was tested
       - name: Get Latest Tag
         uses: actions/github-script@v6
         id: get_latest_tag
@@ -35,11 +36,11 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: console.log(context)
-      
+
       - name: Create first tag if none exists
         uses: actions/github-script@v6
         id: create_tag
-        if: steps.get_latest_tag.outputs.tag == ''
+        if: steps.get_latest_tag.outputs.result == ''
         with:
           script: |
             const tag = 'v0.0.1'
