@@ -83,9 +83,9 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const latest_releases = JSON.parse('${{steps.latest_releases.outputs.result}}')
+            const latest_releases = ${{steps.latest_releases.outputs.result}}
             if (latest_releases.latest_draft_release !== null) {
-              const release_id = JSON.parse('${{steps.latest_releases.outputs.result}}').latest_draft_release.id
+              const release_id = ${{steps.latest_releases.outputs.result}}.latest_draft_release.id
               await github.rest.repos.deleteRelease({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -105,7 +105,7 @@ jobs:
               const commits = await github.rest.repos.listCommits({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                since: JSON.parse('${{steps.latest_releases.outputs.result}}').latest_published_release.published_at
+                since: ${{steps.latest_releases.outputs.result}}.latest_published_release.published_at
               })
               commits.data.forEach(commit => {
                 console.log(commit)
