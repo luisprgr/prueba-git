@@ -84,7 +84,7 @@ jobs:
         with:
           script: |
             const actual_tag = ${{ steps.latest_tag.outputs.result }};
-            const release_output = '${{steps.release.outputs.result}}'';
+            const release_output = '${{steps.release.outputs.result}}';
             const latest_release = release_output == 'null'? null : JSON.parse(release_output);
             
             if latest_release == null {
