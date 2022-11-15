@@ -57,6 +57,17 @@ jobs:
       - name: print last job output
         run: echo '${{steps.latest_releases.outputs.result}}' | python3 -m json.tool
       
+      - name: deletes latest draft release if exists
+        uses: actions/github-script@v6
+        if: ${{ steps.latest_releases.outputs.result.latest_draft_release }} != null
+        with:
+          script: |
+            await github.rest.repos.deleteRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: ${{ steps.latest_releases.outputs.result.latest_draft_release.id }}
+            })
+
       - name: Stablish new release tag if last release is not draft
         uses: actions/github-script@v6
         id: tag
