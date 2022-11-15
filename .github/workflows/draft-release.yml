@@ -52,7 +52,9 @@ jobs:
             console.log(tag)
             return tag != '' ? tag : 'v0.0.1'
         
-
+      - name: print last job output
+        run: echo ${{steps.latest_tag.outputs.result}}
+        
       - name: See if release exists
         uses: actions/github-script@v6
         id: release
