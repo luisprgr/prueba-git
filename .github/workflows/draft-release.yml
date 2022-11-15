@@ -46,6 +46,7 @@ jobs:
               sha: context.sha
             })
       
+      # works and was tested
       - name: Set latest tag name
         uses: actions/github-script@v6
         id: latest_tag
@@ -66,7 +67,7 @@ jobs:
             const release = await github.repos.getReleaseByTag({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              tag: ${{ steps.get_latest_tag.outputs.tag }} != '' ? ${{ steps.get_latest_tag.outputs.tag }} : ${{ steps.create_tag.outputs.tag }} 
+              tag: ${{ steps.latest_tag.outputs.result }} 
             })
             return release.data
       
@@ -75,7 +76,7 @@ jobs:
         id: tag
         with:
           script: |
-            const actual_tag = ${{ steps.get_latest_tag.outputs.tag }} != '' ? ${{ steps.get_latest_tag.outputs.tag }} : ${{ steps.create_tag.outputs.tag }}
+            const actual_tag = ${{ steps.latest_tag.outputs.result }}
             if ${{ steps.release.outputs.result.draft }} {
               return actual_tag
             } else {
