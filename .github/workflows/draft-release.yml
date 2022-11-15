@@ -56,7 +56,7 @@ jobs:
               });
             }
 
-            const latest_releases = JSON.parse('${{steps.latest_releases.outputs.result}}')
+            const latest_releases = ${{steps.latest_releases.outputs.result}}
 
             if (latest_releases.latest_published_release !== null) {
               if (latest_releases.latest_published_release.tag_name == tag) {
@@ -114,14 +114,14 @@ jobs:
               console.log(message)
             }
             return message
-          # result-encoding: string
+          result-encoding: string
 
       - name: Create Release
         uses: actions/github-script@v6
         with:
           script: |
             const tag = '${{ steps.tag.outputs.result }}';
-            const message = ${{ steps.message.outputs.result }};
+            const message = '${{ steps.message.outputs.result }}';
             await github.rest.repos.createRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
