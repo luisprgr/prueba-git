@@ -55,6 +55,7 @@ jobs:
                 sha: context.sha
               });
             }
+            console.log('${{steps.latest_releases.outputs.result}}'.replace('\\n', '\\\\n');
 
             const latest_releases = JSON.parse('${{steps.latest_releases.outputs.result}}'.replace('\\n', '\\\\n'))
 
