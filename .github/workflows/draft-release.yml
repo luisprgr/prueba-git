@@ -73,6 +73,7 @@ jobs:
             }
 
             return tag
+          result-encoding: string
 
       - name: print latest job result
         run: echo ${{ steps.tag.outputs.result }}
