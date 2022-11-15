@@ -50,7 +50,7 @@ jobs:
           script: |
             const tag = ${{steps.get_latest_tag_name.outputs.result}}
             console.log(tag)
-            return tag
+            return tag != '' ? tag : 'v0.0.1'
         
 
       - name: See if release exists
