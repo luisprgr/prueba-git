@@ -13,9 +13,9 @@ jobs:
         uses: actions/checkout@v3
 
       # works and was tested
-      - name: Get Latest Tag
+      - name: Get Latest Tag Name
         uses: actions/github-script@v6
-        id: get_latest_tag
+        id: get_latest_tag_name
         with:
           script: |
             const tags = await github.rest.repos.listTags({
@@ -27,20 +27,12 @@ jobs:
             } else {
               return ''
             }
-            
-      - name: print last workflow
-        run: echo ${{ steps.get_latest_tag.outputs.result }}
-        
-      
-      - name: print context
-        uses: actions/github-script@v6
-        with:
-          script: console.log(context)
 
+      # works and was tested
       - name: Create first tag if none exists
         uses: actions/github-script@v6
         id: create_tag
-        if: steps.get_latest_tag.outputs.result == ''
+        if: steps.get_latest_tag_name.outputs.result == ''
         with:
           script: |
             const tag = 'v0.0.1'
@@ -50,6 +42,16 @@ jobs:
               ref: `refs/tags/${tag}`,
               sha: context.sha
             })
+      
+      - name: Set latest tag name
+        uses: actions/github-script@v6
+        id: latest_tag
+        with:
+          script: |
+            const tag = steps.get_latest_tag_name.outputs.result
+            console.log(tag)
+            return tag
+        
 
       - name: See if release exists
         uses: actions/github-script@v6
