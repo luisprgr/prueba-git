@@ -76,15 +76,15 @@ jobs:
             }
       
       - name: print last job output
-        run: echo ${{steps.release.outputs.result}}
+        run: echo ${{steps.release.outputs.result}} | python3 -m json.tool
       
-      - name: Stablish new release tag
+      - name: Stablish new release tag if last release is not draft
         uses: actions/github-script@v6
         id: tag
         with:
           script: |
             const actual_tag = ${{ steps.latest_tag.outputs.result }}
-            if ${{ steps.release.outputs.result.draft }} {
+            if ${{ steps.release.outputs.result }} {
               return actual_tag
             } else {
               const new_tag = actual_tag.split('.')
