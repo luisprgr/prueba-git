@@ -62,10 +62,11 @@ jobs:
         if: ${{ steps.latest_releases.outputs.result.latest_draft_release }} != null
         with:
           script: |
+            const release_id = JSON.parse('${{steps.latest_releases.outputs.result}}').latest_draft_release.id
             await github.rest.repos.deleteRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              release_id: ${{ steps.latest_releases.outputs.result.latest_draft_release.id }}
+              release_id: release_id
             })
 
       - name: Stablish new release tag if last release is not draft
