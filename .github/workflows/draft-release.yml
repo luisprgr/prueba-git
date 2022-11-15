@@ -111,7 +111,7 @@ jobs:
             return releases.data.filter(release => !release.draft)[0]
       
       - name: print last job output
-        run: echo ${{steps.latest_release.outputs.result}} | python3 -m json.tool
+        run: echo '${{steps.latest_release.outputs.result}}' | python3 -m json.tool
       
       - name: Create release message based on latest commits
         uses: actions/github-script@v6
