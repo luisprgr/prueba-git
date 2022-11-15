@@ -117,14 +117,29 @@ jobs:
           result-encoding: string
 
       - name: Create Release
-        uses: actions/create-release@v1
-        id: create_release
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+        uses: actions/github-script@v6
         with:
-          tag_name: ${{ steps.tag.outputs.result }}
-          release_name: Release ${{ steps.tag.outputs.result }}
-          draft: true
-          body: "${{ steps.message.outputs.result }}"
+          script: |
+            const tag = '${{ steps.tag.outputs.result }}';
+            const message = `${{ steps.message.outputs.result }}`;
+            await github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: tag,
+              name: `Release ${tag}`,
+              body: message,
+              draft: true
+            });
+
+
+
+        # id: create_release
+        # env:
+        #   GITHUB_TOKEN: ${{ github.token }}
+        # with:
+        #   tag_name: ${{ steps.tag.outputs.result }}
+        #   release_name: Release ${{ steps.tag.outputs.result }}
+        #   draft: true
+        #   body: "${{ steps.message.outputs.result }}"
 # name: 'GitHub Actions',
 # email: '41898282+github-actions[bot]@users.noreply.github.com'
