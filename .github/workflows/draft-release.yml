@@ -27,6 +27,9 @@ jobs:
             } else {
               return ''
             }
+      
+      - name: print latest job result
+        run: echo ${{ steps.get_latest_tag_name.outputs.result }}
 
       # works and was tested
       - name: Create first tag if none exists
@@ -54,7 +57,7 @@ jobs:
         
       - name: print last job output
         run: echo ${{steps.latest_tag.outputs.result}}
-        
+
       - name: See if release exists
         uses: actions/github-script@v6
         id: release
