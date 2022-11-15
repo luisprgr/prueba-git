@@ -21,9 +21,12 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               })
-            console.log(tags.data)
-            return tags.data[0].name
-
+            if (tags.data.length > 0) {
+              return tags.data[0].name
+            } else {
+              return ''
+            }
+            
       - name: print last workflow
         run: echo ${{ steps.get_latest_tag.outputs.result }}
         
