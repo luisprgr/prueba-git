@@ -79,6 +79,7 @@ jobs:
       - name: print latest job result
         run: echo ${{ steps.tag.outputs.result }}
 
+      # works and was tested
       - name: deletes latest draft release if exists
         uses: actions/github-script@v6
         with:
@@ -93,6 +94,7 @@ jobs:
               })
             }
 
+      # works and was tested
       - name: Create release message based on latest commits
         uses: actions/github-script@v6
         id: message
@@ -117,6 +119,7 @@ jobs:
             return message
           result-encoding: string
 
+      # works and was tested
       - name: Create Release
         uses: actions/github-script@v6
         with:
@@ -133,14 +136,5 @@ jobs:
             });
 
 
-
-        # id: create_release
-        # env:
-        #   GITHUB_TOKEN: ${{ github.token }}
-        # with:
-        #   tag_name: ${{ steps.tag.outputs.result }}
-        #   release_name: Release ${{ steps.tag.outputs.result }}
-        #   draft: true
-        #   body: "${{ steps.message.outputs.result }}"
 # name: 'GitHub Actions',
 # email: '41898282+github-actions[bot]@users.noreply.github.com'
