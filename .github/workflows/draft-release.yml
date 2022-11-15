@@ -108,7 +108,8 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
             })
-            return releases.data.filter(release => !release.draft)[0]
+            return releases
+            // .data.filter(release => !release.draft)[0]
       
       - name: print last job output
         run: echo '${{steps.latest_release.outputs.result}}' | python3 -m json.tool
