@@ -13,32 +13,6 @@ jobs:
         uses: actions/checkout@v3
 
       # works and was tested
-      - name: Get latest tag name if none exists creates first tag
-        uses: actions/github-script@v6
-        id: latest_tag
-        with:
-          script: |
-            let tag = ''
-            const tags_list = await github.rest.repos.listTags({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              });
-            if (tags_list.data.length > 0) {
-              tag = tags_list.data[0].name;
-            } else {
-              tag = 'v0.0.1';
-              await github.rest.git.createRef({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                ref: `refs/tags/${tag}`,
-                sha: context.sha
-              });
-            } 
-            return tag;
-      
-      - name: print latest job result
-        run: echo ${{ steps.latest_tag.outputs.result }}
-
       - name: Get latest draft release and published release
         uses: actions/github-script@v6
         id: latest_releases
@@ -57,6 +31,52 @@ jobs:
       - name: print last job output
         run: echo '${{steps.latest_releases.outputs.result}}' | python3 -m json.tool
       
+      # works and was tested
+      - name: Get tag name to use if none exists creates first tag
+        uses: actions/github-script@v6
+        id: tag
+        with:
+          script: |
+            let tag = ''
+
+            const tags_list = await github.rest.repos.listTags({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              });
+
+            if (tags_list.data.length > 0) {
+              tag = tags_list.data[0].name;
+            } else {
+              tag = 'v0.0.1';
+              await github.rest.git.createRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: `refs/tags/${tag}`,
+                sha: context.sha
+              });
+            }
+
+            const latest_releases = JSON.parse('${{steps.latest_releases.outputs.result}}')
+
+            if (latest_releases.latest_published_release !== null) {
+              if (latest_releases.latest_published_release.tag_name == tag) {
+                const new_tag = tag.split('.');
+                new_tag[2] = (parseInt(new_tag[2]) + 1).toString();
+                tag = new_tag.join('.');
+                await github.rest.git.createRef({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  ref: `refs/tags/${tag}`,
+                  sha: context.sha
+                });
+              }
+            }
+
+            return tag
+            
+      - name: print latest job result
+        run: echo ${{ steps.tag.outputs.result }}
+      
       - name: deletes latest draft release if exists
         uses: actions/github-script@v6
         if: ${{ steps.latest_releases.outputs.result.latest_draft_release }} != null
@@ -68,55 +88,24 @@ jobs:
               repo: context.repo.repo,
               release_id: release_id
             })
-
-      - name: Stablish new release tag if last release is not draft
-        uses: actions/github-script@v6
-        id: tag
-        with:
-          script: |
-            const actual_tag = ${{ steps.latest_tag.outputs.result }};
-            const release_output = '${{steps.release.outputs.result}}';
-            const latest_release = release_output == 'null'? null : JSON.parse(release_output);
-            
-            if (latest_release == null) {
-              return actual_tag;
-            } else if (latest_release.draft == true) {
-              return actual_tag;
-            } else {
-              const new_tag = actual_tag.split('.');
-              new_tag[2] = (parseInt(new_tag[2]) + 1).toString();
-              return new_tag.join('.');
-            }
-
-      - name: print last job output
-        run: echo ${{steps.tag.outputs.result}}
-      
-      - name: Get latest release not draft
-        uses: actions/github-script@v6
-        id: latest_release
-        with:
-          script: |
-            const releases = await github.rest.repos.listReleases({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-            })
-            return releases
-            // .data.filter(release => !release.draft)[0]
-      
-      - name: print last job output
-        run: echo '${{steps.latest_release.outputs.result}}' | python3 -m json.tool
-      
+ 
       - name: Create release message based on latest commits
         uses: actions/github-script@v6
         id: message
         with:
           script: |
-            const commits = await github.rest.repos. listCommits({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              since: ${{ steps.latest_release.outputs.result }} != null ? ${{ steps.latest_release.outputs.result.published_at }} : '2021-01-01T00:00:00Z'
-            })
-            const message = commits.data.map(commit => {return commit.commit.message}).join('\n')
+            let message = ''
+            if ('${{ steps.tag.outputs.result }}' == 'v0.0.1') {
+              message = 'First release'
+            } else {
+              const commits = await github.rest.repos.listCommits({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                since: JSON.parse('${{steps.latest_releases.outputs.result}}').latest_published_release.published_at
+              })
+              console.log(commits)
+              message = ''
+            }
             return message
       
       - name: print last job output
