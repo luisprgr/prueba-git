@@ -125,7 +125,7 @@ jobs:
         with:
           script: |
             const tag = '${{ steps.tag.outputs.result }}';
-            const message = '${{ steps.message.outputs.result }}';
+            const message = `${{ steps.message.outputs.result }}`;
             await github.rest.repos.createRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
