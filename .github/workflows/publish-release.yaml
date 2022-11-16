@@ -1,6 +1,8 @@
 name: Publish Release
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '30 8 * * 1'
 
 jobs:
   Publish_Release:
@@ -35,3 +37,5 @@ jobs:
                 draft: false,
               })
             }
+      - name: echo event shedule
+        run: echo ${{ github.event.schedule }}
