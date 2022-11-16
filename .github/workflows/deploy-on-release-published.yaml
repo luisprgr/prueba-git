@@ -1,6 +1,5 @@
 name: Deploy on release published
 on:
-
   release:
     types: [published]
 
