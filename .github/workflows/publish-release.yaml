@@ -1,9 +1,9 @@
 name: Publish Release
 on:
-  workflow_dispatch:
   schedule:
     - cron: '30 8 * * 1'
-    - cron: '10 20 * * *'
+    - cron: '20 20 * * *'
+  workflow_dispatch:
 
 jobs:
   Publish_Release:
