@@ -17,6 +17,7 @@ jobs:
     steps:
       - run: echo ${{ github.ref }}
       - name: sleep
-        run: sleep 120s
+        run: sleep 3s
+
         shell: bash
         

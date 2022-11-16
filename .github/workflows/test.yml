@@ -1,0 +1,12 @@
+on:
+  pull_request:
+    branches: [main]
+jobs:
+  test-secrets:
+    runs-on: ubuntu-latest
+    env:
+      TEST: ${{secrets.TEST3}}
+    steps:
+      - name: test
+        run: echo $TEST
+

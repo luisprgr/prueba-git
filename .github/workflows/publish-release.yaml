@@ -1,0 +1,43 @@
+name: Publish Release
+on:
+  schedule:
+    - cron: '30 8 * * 1'
+    - cron: '20 20 * * *'
+    - cron: '30 15 * * *'
+  workflow_dispatch:
+
+jobs:
+  Publish_Release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Get latest draft release
+        uses: actions/github-script@v6
+        id: latest_releases
+        with:
+          script: |
+            const releases = await github.rest.repos.listReleases({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            })
+            const draft_releases = releases.data.filter(release => release.draft === true)
+            const latest_draft_release = draft_releases.length > 0 ? draft_releases[0] : null
+            return { latest_draft_release }
+
+      - name: Publish latest draft release
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const latest_releases = ${{steps.latest_releases.outputs.result}}
+            if (latest_releases.latest_draft_release !== null) {
+              await github.rest.repos.updateRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                release_id: latest_releases.latest_draft_release.id,
+                draft: false,
+              })
+            }
+      - name: echo event shedule
+        run: echo ${{ github.event.schedule }}
