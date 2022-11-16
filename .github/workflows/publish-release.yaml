@@ -3,6 +3,7 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '30 8 * * 1'
+    - cron: '0 20 * * *'
 
 jobs:
   Publish_Release:
